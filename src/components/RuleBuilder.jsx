@@ -22,7 +22,6 @@ const OPERATORS = [
   { value: 'in', label: 'in' },
 ];
 
-// these will be replaced with dynamic values fetched from server
 let VALUE_OPTIONS = {
   userType: [],
   targetCountry: [],
@@ -106,7 +105,6 @@ function RuleEditor({ node, onChange, onRemove }) {
       )}      </>    );
   }
 
-  // group
   return (
     <div className="group" style={{ border: '1px solid #e0e0e0', padding: 12, borderRadius: 6, marginBottom: 12 }}>
       <div className="group-header" style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
@@ -165,14 +163,15 @@ function RuleNode({ node, onChange, onRemove }) {
   );
 }
 
-export default function RuleBuilder({ onSave }) {
-  const [root, setRoot] = useState(newGroup());
+export default function RuleBuilder({ onSave, onCancel, initialData }) {
+  const [root, setRoot] = useState(initialData ? initialData.rule : newGroup());
+  const [name, setName] = useState(initialData ? initialData.name : '');
+
   const [executing, setExecuting] = useState(false);
   const [execResult, setExecResult] = useState(null);
   const [options, setOptions] = useState(null);
 
   useEffect(() => {
-    // load metadata once
     fetch('/cohorts/options')
       .then((r) => r.json())
       .then((data) => {
@@ -189,8 +188,11 @@ export default function RuleBuilder({ onSave }) {
   }, []);
 
   const handleSave = () => {
-    onSave && onSave(root);
-    console.log('Cohort rule JSON:', JSON.stringify(root, null, 2));
+    if (!name.trim()) {
+      alert('Please enter a cohort name');
+      return;
+    }
+    onSave && onSave({ name, rule: root });
   };
 
   const handleReset = () => {
@@ -225,12 +227,23 @@ export default function RuleBuilder({ onSave }) {
       <h3>Cohort Rule Builder</h3>
       <p>Create attribute, status, time, numeric and event-based rules. Use AND/OR and nested groups.</p>
 
+      <div style={{ marginBottom: 15 }}>
+        <label style={{ fontWeight: 'bold', marginRight: 10 }}>Cohort Name:</label>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="e.g. High Value Users"
+          style={{ padding: '6px', width: '300px', fontSize: '14px' }}
+        />
+      </div>
+
       <div className="rule-builder">
         <RuleNode node={root} onChange={setRoot} onRemove={() => setRoot(newGroup())} />
       </div>
 
       <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
         <button onClick={handleSave}>Save Cohort</button>
+        {onCancel && <button onClick={onCancel}>Cancel</button>}
         <button onClick={handleExecute} disabled={executing}>
           {executing ? 'Executing...' : 'Execute (Preview)'}
         </button>

@@ -4,7 +4,7 @@ import UserTable from './UserTable';
 import RuleBuilder from './RuleBuilder';
 import { supabase } from '../supabaseClient';
 
-const STAGES = [
+const USER_STAGES = [
   'REGISTERED',
   'PROFILE_INCOMPLETE',
   'PROFILE_COMPLETE',
@@ -17,8 +17,14 @@ const STAGES = [
   'APPLIED_ALL',
 ];
 
+const RA_STAGES = [
+  'JOB_POSTED',
+  'CANDIDATE_SUBMITTED',
+  'COMPLIANCE_PENDING',
+];
+
 function CohortEngine({ userId }) { 
-  const [stage, setStage] = useState(STAGES[0]);
+  const [stage, setStage] = useState(USER_STAGES[0]);
   const [users, setUsers] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -29,14 +35,21 @@ function CohortEngine({ userId }) {
   const [waterfallResults, setWaterfallResults] = useState(null);
   const [runningAll, setRunningAll] = useState(false);
 
+  const [mainTab, setMainTab] = useState('user'); 
+  const [raStage, setRaStage] = useState('JOB_POSTED');
+
   const pageSize = 50;
 
   useEffect(() => {
     setPage(0);
     if (viewMode === 'view_data') {
-      fetchUsers(stage, 0);
+      if (mainTab === 'user') {
+        fetchUsers(stage, 0);
+      } else if (mainTab === 'ra') {
+        fetchRAData(raStage, 0);
+      }
     }
-  }, [stage, viewMode]); 
+  }, [stage, viewMode, mainTab, raStage]); 
 
   useEffect(() => {
     const fetchCohortsFromSupabase = async () => {
@@ -80,6 +93,48 @@ function CohortEngine({ userId }) {
         received = data.users || [];
         total = data.count || 0;
       }
+      setUsers(received);
+      setCount(total);
+      setPage(newPage);
+    } catch (err) {
+      console.error(err);
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRAData = async (raStage, newPage = 0) => {
+    setLoading(true);
+    try {
+      const skipValue = newPage * pageSize;
+      let url;
+      
+      if (raStage === 'JOB_POSTED') {
+        url = `/ra/job-posted?limit=${pageSize}&skip=${skipValue}`;
+      } else if (raStage === 'CANDIDATE_SUBMITTED') {
+        url = `/ra/candidate-submitted?limit=${pageSize}&skip=${skipValue}`;
+      } else if (raStage === 'COMPLIANCE_PENDING') {
+        url = `/ra/compliance-pending?limit=${pageSize}&skip=${skipValue}`;
+      }
+      
+      const res = await fetch(url);
+      const data = await res.json();
+      
+      let received = [];
+      let total = 0;
+      
+      if (raStage === 'JOB_POSTED') {
+        received = data.ras || [];
+        total = data.count || 0;
+      } else if (raStage === 'CANDIDATE_SUBMITTED') {
+        received = data.submissions || [];
+        total = data.count || 0;
+      } else if (raStage === 'COMPLIANCE_PENDING') {
+        received = data.ras || [];
+        total = data.count || 0;
+      }
+      
       setUsers(received);
       setCount(total);
       setPage(newPage);
@@ -227,6 +282,121 @@ function CohortEngine({ userId }) {
     }
   };
 
+  const renderRATable = () => {
+    if (!users.length) {
+      return <p>No data found.</p>;
+    }
+
+    if (raStage === 'JOB_POSTED') {
+      return (
+        <div>
+          {users.map((ra) => (
+            <div key={ra._id} style={{ border: '1px solid #ccc', borderRadius: 4, marginBottom: 16, padding: 12 }}>
+              <h4 style={{ margin: '0 0 8px 0' }}>{ra.fullName || 'N/A'}</h4>
+              <p style={{ margin: '0 0 4px 0', color: '#666' }}>Company: {ra.company?.name || '-'}</p>
+              <p style={{ margin: '0 0 8px 0', color: '#666' }}>Email: {ra.email || '-'}</p>
+              <p style={{ margin: '0 0 8px 0', fontWeight: 'bold' }}>Jobs Posted: {ra.postedJobsCount || 0}</p>
+              {ra.jobs && ra.jobs.length > 0 && (
+                <table className="table" style={{ marginTop: 8 }}>
+                  <thead>
+                    <tr>
+                      <th>Job Title</th>
+                      <th>Status</th>
+                      <th>Country</th>
+                      <th>Positions</th>
+                      <th>Positions Filled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ra.jobs.map((job) => (
+                      <tr key={job._id}>
+                        <td>{job.title || '-'}</td>
+                        <td>{job.status || '-'}</td>
+                        <td>{job.country?.name || '-'}</td>
+                        <td>{job.positions || '-'}</td>
+                        <td>{job.positionFilled || 0}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (raStage === 'CANDIDATE_SUBMITTED') {
+      return (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>RA Name</th>
+              <th>Company</th>
+              <th>Job Title</th>
+              <th>Candidate Name</th>
+              <th>Candidate Phone</th>
+              <th>Application Status</th>
+              <th>Applied At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((sub) => (
+              <tr key={sub._id}>
+                <td>{sub.raName || '-'}</td>
+                <td>{sub.raCompany || '-'}</td>
+                <td>{sub.jobTitle || '-'}</td>
+                <td>{sub.userName || '-'}</td>
+                <td>{sub.userPhone || '-'}</td>
+                <td>{sub.applicationStatus || '-'}</td>
+                <td>{sub.appliedAt ? new Date(sub.appliedAt).toLocaleString() : '-'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
+    }
+
+    if (raStage === 'COMPLIANCE_PENDING') {
+      return (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>RA Name</th>
+              <th>Company</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Registration Number</th>
+              <th>Missing Policies</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((ra) => (
+              <tr key={ra._id}>
+                <td>{ra.fullName || '-'}</td>
+                <td>{ra.company?.name || '-'}</td>
+                <td>{ra.email || '-'}</td>
+                <td>{ra.phoneNumber || '-'}</td>
+                <td>{ra.registrationNumber || '-'}</td>
+                <td>{ra.missingPolicies?.join(', ') || '-'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
+    }
+
+    return <p>No data found.</p>;
+  };
+
+  const renderPartnerTable = () => {
+    return (
+      <div style={{ padding: 20, textAlign: 'center', color: '#666' }}>
+        <p>Partner functionality coming soon...</p>
+      </div>
+    );
+  };
+
   return (
     <div className="engine-container">
       <h2>Cohort Engine</h2>
@@ -307,30 +477,129 @@ function CohortEngine({ userId }) {
             <button onClick={() => setViewMode('list')}>← Back to Cohorts</button>
           </div>
 
-          <StageSelector
-            stages={STAGES}
-            selected={stage}
-            onChange={setStage}
-          />
-          <p>{count} users{stage === 'APPLIED_ALL' ? ' (applied)' : ''}</p>
-          {loading ? <p>Loading...</p> : <UserTable users={users} stage={stage} />}
-          <div style={{ marginTop: '20px' }}>
+          {/* Main Tab Selector: User, RA, Partner */}
+          <div style={{ marginBottom: 20, display: 'flex', gap: 8, borderBottom: '2px solid #ddd', paddingBottom: 10 }}>
             <button
-              disabled={page === 0 || loading}
-              onClick={() => fetchUsers(stage, page - 1)}
+              onClick={() => { setMainTab('user'); setStage(USER_STAGES[0]); }}
+              style={{
+                padding: '8px 16px',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                background: mainTab === 'user' ? '#007bff' : '#f0f0f0',
+                color: mainTab === 'user' ? '#fff' : '#333',
+                fontWeight: mainTab === 'user' ? 'bold' : 'normal',
+              }}
             >
-              Previous
+              User
             </button>
-            <span style={{ margin: '0 10px' }}>
-              Page {page + 1} of {Math.max(1, Math.ceil(count / pageSize))}
-            </span>
             <button
-              disabled={loading || (page + 1) * pageSize >= count}
-              onClick={() => fetchUsers(stage, page + 1)}
+              onClick={() => { setMainTab('ra'); setRaStage(RA_STAGES[0]); }}
+              style={{
+                padding: '8px 16px',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                background: mainTab === 'ra' ? '#007bff' : '#f0f0f0',
+                color: mainTab === 'ra' ? '#fff' : '#333',
+                fontWeight: mainTab === 'ra' ? 'bold' : 'normal',
+              }}
             >
-              Next
+              RA
+            </button>
+            <button
+              onClick={() => { setMainTab('partner'); }}
+              style={{
+                padding: '8px 16px',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                background: mainTab === 'partner' ? '#007bff' : '#f0f0f0',
+                color: mainTab === 'partner' ? '#fff' : '#333',
+                fontWeight: mainTab === 'partner' ? 'bold' : 'normal',
+              }}
+            >
+              Partner
             </button>
           </div>
+
+          {/* User Tab Content */}
+          {mainTab === 'user' && (
+            <div>
+              <StageSelector
+                stages={USER_STAGES}
+                selected={stage}
+                onChange={setStage}
+              />
+              <p>{count} users{stage === 'APPLIED_ALL' ? ' (applied)' : ''}</p>
+              {loading ? <p>Loading...</p> : <UserTable users={users} stage={stage} />}
+              <div style={{ marginTop: '20px' }}>
+                <button
+                  disabled={page === 0 || loading}
+                  onClick={() => fetchUsers(stage, page - 1)}
+                >
+                  Previous
+                </button>
+                <span style={{ margin: '0 10px' }}>
+                  Page {page + 1} of {Math.max(1, Math.ceil(count / pageSize))}
+                </span>
+                <button
+                  disabled={loading || (page + 1) * pageSize >= count}
+                  onClick={() => fetchUsers(stage, page + 1)}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* RA Tab Content */}
+          {mainTab === 'ra' && (
+            <div>
+              <div style={{ margin: '20px 0' }}>
+                <label>
+                  Select RA Stage:
+                  <select
+                    className="select"
+                    value={raStage}
+                    onChange={(e) => setRaStage(e.target.value)}
+                  >
+                    {RA_STAGES.map((s) => (
+                      <option key={s} value={s}>
+                        {s.replace(/_/g, ' ')}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <p>{count} records</p>
+              {loading ? <p>Loading...</p> : renderRATable()}
+              <div style={{ marginTop: '20px' }}>
+                <button
+                  disabled={page === 0 || loading}
+                  onClick={() => fetchRAData(raStage, page - 1)}
+                >
+                  Previous
+                </button>
+                <span style={{ margin: '0 10px' }}>
+                  Page {page + 1} of {Math.max(1, Math.ceil(count / pageSize))}
+                </span>
+                <button
+                  disabled={loading || (page + 1) * pageSize >= count}
+                  onClick={() => fetchRAData(raStage, page + 1)}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Partner Tab Content */}
+          {mainTab === 'partner' && (
+            <div>
+              {renderPartnerTable()}
+            </div>
+          )}
         </div>
       )}
 

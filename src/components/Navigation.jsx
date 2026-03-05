@@ -1,6 +1,7 @@
 import React from 'react';
+import { supabase } from '../supabaseClient';
 
-function Navigation({ activeTab, onTabChange }) {
+function Navigation({ activeTab, onTabChange, userEmail }) {
   const tabs = [
     'Cohort Engine',
     'Workflow Orchestration Engine',
@@ -11,6 +12,10 @@ function Navigation({ activeTab, onTabChange }) {
     'Admin Dashboard',
     'Event Listener & Real-time Reassignment Engine',
   ];
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <nav className="navbar">
@@ -26,6 +31,12 @@ function Navigation({ activeTab, onTabChange }) {
               {tab}
             </button>
           ))}
+        </div>
+        <div className="nav-user-section" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <span style={{ color: '#eee' }}>{userEmail}</span>
+          <button onClick={handleLogout} className="nav-button">
+            Logout
+          </button>
         </div>
       </div>
     </nav>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import StageSelector from './StageSelector';
 import UserTable from './UserTable';
 import RuleBuilder from './RuleBuilder';
+import { supabase } from '../supabaseClient';
 
 const STAGES = [
   'REGISTERED',
@@ -16,7 +17,7 @@ const STAGES = [
   'APPLIED_ALL',
 ];
 
-function CohortEngine() {
+function CohortEngine({ userId }) { 
   const [stage, setStage] = useState(STAGES[0]);
   const [users, setUsers] = useState([]);
   const [count, setCount] = useState(0);
@@ -32,8 +33,31 @@ function CohortEngine() {
 
   useEffect(() => {
     setPage(0);
-    if (viewMode === 'view_data') fetchUsers(stage, 0);
-  }, [stage, viewMode]);
+    if (viewMode === 'view_data') {
+      fetchUsers(stage, 0);
+    }
+  }, [stage, viewMode]); 
+
+  useEffect(() => {
+    const fetchCohortsFromSupabase = async () => {
+      if (!userId) return; 
+      setLoading(true); 
+      try {
+        const { data, error } = await supabase
+          .from('cohort_rules')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: true }); 
+        if (error) throw error;
+        setCohorts(data.map(c => ({ id: c.id, name: c.name, rule: c.rule_definition })));
+      } catch (error) {
+        console.error('Error fetching cohorts:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCohortsFromSupabase();
+  }, [userId]); 
 
   const fetchUsers = async (selectedStage, newPage = 0) => {
     setLoading(true);
@@ -67,23 +91,73 @@ function CohortEngine() {
     }
   };
 
-  const handleSaveCohort = (data) => {
-    if (editingIndex !== null) {
-      const updated = [...cohorts];
-      updated[editingIndex] = { ...data, id: cohorts[editingIndex].id };
-      setCohorts(updated);
-    } else {
-      setCohorts([...cohorts, { ...data, id: Date.now() }]);
+  const handleSaveCohort = async (data) => {
+    if (!userId) {
+      alert('User not logged in. Cannot save cohort.');
+      return;
     }
-    setViewMode('list');
-    setEditingIndex(null);
+    setLoading(true);
+    try {
+      if (editingIndex !== null) {
+        const cohortToUpdate = cohorts[editingIndex];
+        const { error } = await supabase
+          .from('cohort_rules')
+          .update({ name: data.name, rule_definition: data.rule, updated_at: new Date().toISOString() })
+          .eq('id', cohortToUpdate.id);
+        if (error) throw error;
+
+        const updated = [...cohorts];
+        updated[editingIndex] = { ...data, id: cohortToUpdate.id };
+        setCohorts(updated);
+      } else {
+        const { data: newCohortData, error } = await supabase
+          .from('cohort_rules')
+          .insert({ user_id: userId, name: data.name, rule_definition: data.rule })
+          .select(); 
+        if (error) throw error;
+
+        if (newCohortData && newCohortData.length > 0) {
+          setCohorts([...cohorts, {
+            id: newCohortData[0].id,
+            name: newCohortData[0].name,
+            rule: newCohortData[0].rule_definition
+          }]);
+        }
+      }
+      setViewMode('list');
+      setEditingIndex(null);
+    } catch (error) {
+      console.error('Error saving cohort:', error.message);
+      alert('Failed to save cohort: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDeleteCohort = (index) => {
+  const handleDeleteCohort = async (index) => {
+    if (!userId) {
+      alert('User not logged in. Cannot delete cohort.');
+      return;
+    }
     if (window.confirm('Are you sure you want to delete this cohort?')) {
-      const updated = [...cohorts];
-      updated.splice(index, 1);
-      setCohorts(updated);
+      setLoading(true);
+      try {
+        const cohortToDelete = cohorts[index];
+        const { error } = await supabase
+          .from('cohort_rules')
+          .delete()
+          .eq('id', cohortToDelete.id);
+        if (error) throw error;
+
+        const updated = [...cohorts];
+        updated.splice(index, 1);
+        setCohorts(updated);
+      } catch (error) {
+        console.error('Error deleting cohort:', error.message);
+        alert('Failed to delete cohort: ' + error.message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

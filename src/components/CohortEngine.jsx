@@ -1,7 +1,10 @@
+
+
 import React, { useState, useEffect } from 'react';
 import StageSelector from './StageSelector';
 import UserTable from './UserTable';
 import RuleBuilder from './RuleBuilder';
+import SendCommsModal from './SendCommsModal';
 import { supabase } from '../supabaseClient';
 
 const USER_STAGES = [
@@ -37,8 +40,18 @@ function CohortEngine({ userId }) {
 
   const [mainTab, setMainTab] = useState('user'); 
   const [raStage, setRaStage] = useState('JOB_POSTED');
+  
+  const [showSendComms, setShowSendComms] = useState(false);
+  const [commsUsers, setCommsUsers] = useState([]);
+  const [commsCohortName, setCommsCohortName] = useState('');
 
   const pageSize = 50;
+  
+  const handleOpenSendComms = (users, cohortName) => {
+    setCommsUsers(users);
+    setCommsCohortName(cohortName);
+    setShowSendComms(true);
+  };
 
   useEffect(() => {
     setPage(0);
@@ -460,7 +473,24 @@ function CohortEngine({ userId }) {
                     </span>
                   </h4>
                   {res.users.length > 0 ? (
-                    <UserTable users={res.users} stage="CUSTOM" />
+                    <div>
+                      <div style={{ marginBottom: 10 }}>
+                        <button 
+                          onClick={() => handleOpenSendComms(res.users, res.name)}
+                          style={{
+                            padding: '6px 12px',
+                            background: '#28a745',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: 4,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Send Comms
+                        </button>
+                      </div>
+                      <UserTable users={res.users} stage="CUSTOM" />
+                    </div>
                   ) : (
                     <p style={{ fontStyle: 'italic', color: '#888' }}>No new users matched (or all matched were taken by higher priority cohorts).</p>
                   )}
@@ -614,6 +644,14 @@ function CohortEngine({ userId }) {
             initialData={editingIndex !== null ? cohorts[editingIndex] : null}
           />
         </div>
+      )}
+
+      {showSendComms && (
+        <SendCommsModal 
+          onClose={() => setShowSendComms(false)} 
+          users={commsUsers} 
+          cohortName={commsCohortName}
+        />
       )}
     </div>
   );

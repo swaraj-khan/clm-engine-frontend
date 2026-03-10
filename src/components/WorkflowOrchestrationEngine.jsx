@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import ReactFlow, {
   addEdge,
@@ -186,7 +187,7 @@ function Sidebar() {
       backgroundColor: '#f9fafb',
       borderRight: '1px solid #e5e7eb',
       padding: '16px',
-      height: 'calc(100vh - 140px)',
+      height: 'calc(100vh - 110px)',
       overflowY: 'auto',
     }}>
       <h3 style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '12px' }}>
@@ -237,7 +238,7 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
       backgroundColor: 'white',
       borderLeft: '1px solid #e5e7eb',
       padding: '16px',
-      height: 'calc(100vh - 140px)',
+      height: '100%',
       overflowY: 'auto',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -259,7 +260,6 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
         </button>
       </div>
 
-      {/* Trigger Node Config */}
       {selectedNode.type === NODE_TYPES.TRIGGER && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
@@ -269,13 +269,7 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
             <select
               value={selectedNode.data.event || ''}
               onChange={(e) => handleChange('event', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             >
               <option value="">Select event...</option>
               {TRIGGER_EVENTS.map((event) => (
@@ -284,61 +278,36 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
             </select>
           </div>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Label
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Label</label>
             <input
               type="text"
               value={selectedNode.data.label || ''}
               onChange={(e) => handleChange('label', e.target.value)}
               placeholder="e.g., User enters profile incomplete"
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             />
           </div>
         </div>
       )}
 
-      {/* Delay Node Config */}
       {selectedNode.type === NODE_TYPES.DELAY && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Duration
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Duration</label>
             <input
               type="number"
               value={selectedNode.data.duration || 24}
               onChange={(e) => handleChange('duration', parseInt(e.target.value))}
               min="1"
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             />
           </div>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Unit
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Unit</label>
             <select
               value={selectedNode.data.unit || 'hours'}
               onChange={(e) => handleChange('unit', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             >
               <option value="minutes">Minutes</option>
               <option value="hours">Hours</option>
@@ -346,43 +315,26 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
             </select>
           </div>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Label
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Label</label>
             <input
               type="text"
               value={selectedNode.data.label || ''}
               onChange={(e) => handleChange('label', e.target.value)}
               placeholder="e.g., Wait 24 hours"
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             />
           </div>
         </div>
       )}
 
-      {/* Channel Node Config */}
       {selectedNode.type === NODE_TYPES.CHANNEL && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Channel
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Channel</label>
             <select
               value={selectedNode.data.channel || ''}
               onChange={(e) => handleChange('channel', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             >
               <option value="">Select channel...</option>
               {CHANNELS.map((ch) => (
@@ -391,62 +343,36 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
             </select>
           </div>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Message Template (optional)
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Message Template (optional)</label>
             <textarea
               value={selectedNode.data.message || ''}
               onChange={(e) => handleChange('message', e.target.value)}
               placeholder="Enter message or leave empty for default template"
               rows={4}
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-                resize: 'vertical',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px', resize: 'vertical' }}
             />
           </div>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Label
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Label</label>
             <input
               type="text"
               value={selectedNode.data.label || ''}
               onChange={(e) => handleChange('label', e.target.value)}
               placeholder="e.g., Send welcome email"
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             />
           </div>
         </div>
       )}
 
-      {/* Condition Node Config */}
       {selectedNode.type === NODE_TYPES.CONDITION && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Field to Check
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Field to Check</label>
             <select
               value={selectedNode.data.field || ''}
               onChange={(e) => handleChange('field', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             >
               <option value="">Select field...</option>
               <option value="status">Status</option>
@@ -456,19 +382,11 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
             </select>
           </div>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Operator
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Operator</label>
             <select
               value={selectedNode.data.operator || 'eq'}
               onChange={(e) => handleChange('operator', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             >
               <option value="eq">Equals</option>
               <option value="neq">Not Equals</option>
@@ -478,64 +396,39 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
             </select>
           </div>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Value
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Value</label>
             <input
               type="text"
               value={selectedNode.data.value || ''}
               onChange={(e) => handleChange('value', e.target.value)}
               placeholder="Value to compare"
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             />
           </div>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Label
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Label</label>
             <input
               type="text"
               value={selectedNode.data.label || ''}
               onChange={(e) => handleChange('label', e.target.value)}
               placeholder="e.g., If profile complete"
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             />
           </div>
         </div>
       )}
 
-      {/* A/B Split Node Config */}
       {selectedNode.type === NODE_TYPES.AB_SPLIT && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Split Percentage (A)
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Split Percentage (A)</label>
             <input
               type="number"
               value={selectedNode.data.percentageA || 50}
               onChange={(e) => handleChange('percentageA', parseInt(e.target.value))}
               min="1"
               max="99"
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             />
           </div>
           <div style={{ fontSize: '12px', color: '#6b7280' }}>
@@ -544,24 +437,15 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
         </div>
       )}
 
-      {/* Cohort Movement Node Config - Now fetches from Supabase */}
       {selectedNode.type === NODE_TYPES.COHORT_MOVEMENT && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Target Cohort / Stage
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Target Cohort / Stage</label>
             {cohorts && cohorts.length > 0 ? (
               <select
                 value={selectedNode.data.targetCohort || ''}
                 onChange={(e) => handleChange('targetCohort', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                }}
+                style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
               >
                 <option value="">Select cohort...</option>
                 <optgroup label="Custom Cohorts">
@@ -579,13 +463,7 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
               <select
                 value={selectedNode.data.targetCohort || ''}
                 onChange={(e) => handleChange('targetCohort', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                }}
+                style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
               >
                 <option value="">Select stage...</option>
                 {STAGES.map((stage) => (
@@ -595,45 +473,28 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
             )}
           </div>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Label
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Label</label>
             <input
               type="text"
               value={selectedNode.data.label || ''}
               onChange={(e) => handleChange('label', e.target.value)}
               placeholder="e.g., Move to Interview Scheduled"
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             />
           </div>
         </div>
       )}
 
-      {/* Exit Node Config */}
       {selectedNode.type === NODE_TYPES.EXIT && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>
-              Exit Reason (optional)
-            </label>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#374151', display: 'block', marginBottom: '4px' }}>Exit Reason (optional)</label>
             <input
               type="text"
               value={selectedNode.data.reason || ''}
               onChange={(e) => handleChange('reason', e.target.value)}
               placeholder="e.g., User dropped off"
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '13px',
-              }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px' }}
             />
           </div>
         </div>
@@ -643,7 +504,7 @@ function NodeConfigPanel({ selectedNode, updateNodeData, onClose, cohorts }) {
 }
 
 // Workflow list item component
-function WorkflowListItem({ workflow, onEdit, onDelete, onActivate, onDeactivate }) {
+function WorkflowListItem({ workflow, onEdit, onDelete, onActivate, onDeactivate, onSeeLogs }) {
   const getStatusColor = (status) => {
     switch (status) {
       case 'active': return '#10b981';
@@ -653,101 +514,61 @@ function WorkflowListItem({ workflow, onEdit, onDelete, onActivate, onDeactivate
   };
 
   return (
-    <div style={{
-      border: '1px solid #e5e7eb',
-      borderRadius: '8px',
-      padding: '16px',
-      marginBottom: '12px',
-      backgroundColor: 'white',
-    }}>
+    <div style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '16px', marginBottom: '12px', backgroundColor: 'white' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ flex: 1 }}>
           <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600' }}>{workflow.name}</h3>
-          <p style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#6b7280' }}>
-            {workflow.description || 'No description'}
-          </p>
+          <p style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#6b7280' }}>{workflow.description || 'No description'}</p>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span style={{
-              padding: '2px 8px',
-              borderRadius: '4px',
-              fontSize: '12px',
-              fontWeight: '500',
-              backgroundColor: getStatusColor(workflow.status) + '20',
-              color: getStatusColor(workflow.status),
-            }}>
+            <span style={{ padding: '2px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: '500', backgroundColor: getStatusColor(workflow.status) + '20', color: getStatusColor(workflow.status) }}>
               {workflow.status?.toUpperCase() || 'DRAFT'}
             </span>
-            <span style={{ fontSize: '12px', color: '#9ca3af' }}>
-              v{workflow.version || 1}
-            </span>
-            <span style={{ fontSize: '12px', color: '#9ca3af' }}>
-              {workflow.nodes?.length || 0} nodes
-            </span>
+            <span style={{ fontSize: '12px', color: '#9ca3af' }}>v{workflow.version || 1}</span>
+            <span style={{ fontSize: '12px', color: '#9ca3af' }}>{workflow.nodes?.length || 0} nodes</span>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button
-            onClick={() => onEdit(workflow)}
-            style={{
-              padding: '6px 12px',
-              border: '1px solid #d1d5db',
-              borderRadius: '4px',
-              backgroundColor: 'white',
-              cursor: 'pointer',
-              fontSize: '13px',
-              color: '#333',
-            }}
-          >
-            Edit
-          </button>
+          <button onClick={() => onEdit(workflow)} style={{ padding: '6px 12px', border: '1px solid #d1d5db', borderRadius: '4px', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', color: '#333' }}>Edit</button>
           {workflow.status === 'active' ? (
-            <button
-              onClick={() => onDeactivate(workflow._id)}
-              style={{
-                padding: '6px 12px',
-                border: '1px solid #f59e0b',
-                borderRadius: '4px',
-                backgroundColor: '#fef3c7',
-                color: '#b45309',
-                cursor: 'pointer',
-                fontSize: '13px',
-              }}
-            >
-              Deactivate
-            </button>
+            <>
+              <button onClick={() => onSeeLogs(workflow)} style={{ padding: '6px 12px', border: '1px solid #8b5cf6', borderRadius: '4px', backgroundColor: '#f3e8ff', color: '#7c3aed', cursor: 'pointer', fontSize: '13px' }}>▼ See Logs</button>
+              <button onClick={() => onDeactivate(workflow._id)} style={{ padding: '6px 12px', border: '1px solid #f59e0b', borderRadius: '4px', backgroundColor: '#fef3c7', color: '#b45309', cursor: 'pointer', fontSize: '13px' }}>Deactivate</button>
+            </>
           ) : (
-            <button
-              onClick={() => onActivate(workflow._id)}
-              disabled={workflow.status === 'paused'}
-              style={{
-                padding: '6px 12px',
-                border: '1px solid #10b981',
-                borderRadius: '4px',
-                backgroundColor: '#d1fae5',
-                color: '#047857',
-                cursor: workflow.status === 'paused' ? 'not-allowed' : 'pointer',
-                fontSize: '13px',
-                opacity: workflow.status === 'paused' ? 0.5 : 1,
-              }}
-            >
-              Activate
-            </button>
+            <button onClick={() => onActivate(workflow._id)} disabled={workflow.status === 'paused'} style={{ padding: '6px 12px', border: '1px solid #10b981', borderRadius: '4px', backgroundColor: '#d1fae5', color: '#047857', cursor: workflow.status === 'paused' ? 'not-allowed' : 'pointer', fontSize: '13px', opacity: workflow.status === 'paused' ? 0.5 : 1 }}>Activate</button>
           )}
-          <button
-            onClick={() => onDelete(workflow._id)}
-            style={{
-              padding: '6px 12px',
-              border: '1px solid #ef4444',
-              borderRadius: '4px',
-              backgroundColor: '#fee2e2',
-              color: '#dc2626',
-              cursor: 'pointer',
-              fontSize: '13px',
-            }}
-          >
-            Delete
-          </button>
+          <button onClick={() => onDelete(workflow._id)} style={{ padding: '6px 12px', border: '1px solid #ef4444', borderRadius: '4px', backgroundColor: '#fee2e2', color: '#dc2626', cursor: 'pointer', fontSize: '13px' }}>Delete</button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Logs Modal Component
+function LogsModal({ isOpen, onClose, workflowName, logs, loading }) {
+  if (!isOpen) return null;
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+      <div style={{ backgroundColor: 'white', borderRadius: '8px', padding: '20px', width: '600px', maxHeight: '80vh', overflow: 'auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h3 style={{ margin: 0 }}>Workflow Logs: {workflowName}</h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#6b7280' }}>×</button>
+        </div>
+        {loading ? (
+          <p>Loading logs...</p>
+        ) : logs.length === 0 ? (
+          <p style={{ color: '#6b7280' }}>No logs available for this workflow.</p>
+        ) : (
+          <div style={{ maxHeight: '400px', overflow: 'auto' }}>
+            {logs.map((log, index) => (
+              <div key={index} style={{ padding: '12px', borderBottom: '1px solid #e5e7eb', fontSize: '13px' }}>
+                <div style={{ fontWeight: '500', marginBottom: '4px' }}>{new Date(log.timestamp).toLocaleString()}</div>
+                <div style={{ color: '#374151' }}>{log.message}</div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -755,7 +576,7 @@ function WorkflowListItem({ workflow, onEdit, onDelete, onActivate, onDeactivate
 
 // Main WorkflowOrchestrationEngine component
 function WorkflowOrchestrationEngine() {
-  const [viewMode, setViewMode] = useState('list'); // 'list' | 'build'
+  const [viewMode, setViewMode] = useState('list');
   const [workflows, setWorkflows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedWorkflow, setSelectedWorkflow] = useState(null);
@@ -763,12 +584,15 @@ function WorkflowOrchestrationEngine() {
   const [workflowDescription, setWorkflowDescription] = useState('');
   const [cohorts, setCohorts] = useState([]);
   
-  // ReactFlow state
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState(null);
+  
+  const [logsModalOpen, setLogsModalOpen] = useState(false);
+  const [selectedWorkflowForLogs, setSelectedWorkflowForLogs] = useState(null);
+  const [workflowLogs, setWorkflowLogs] = useState([]);
+  const [logsLoading, setLogsLoading] = useState(false);
 
-  // Fetch workflows from backend
   const fetchWorkflows = useCallback(async () => {
     setLoading(true);
     try {
@@ -782,7 +606,6 @@ function WorkflowOrchestrationEngine() {
     }
   }, []);
 
-  // Fetch cohorts from Supabase
   const fetchCohorts = useCallback(async () => {
     try {
       const { data, error } = await supabase
@@ -802,7 +625,6 @@ function WorkflowOrchestrationEngine() {
     fetchCohorts();
   }, [fetchWorkflows, fetchCohorts]);
 
-  // Handle new workflow creation
   const handleCreateNew = () => {
     setSelectedWorkflow(null);
     setWorkflowName('');
@@ -812,13 +634,11 @@ function WorkflowOrchestrationEngine() {
     setViewMode('build');
   };
 
-  // Handle workflow selection for editing
   const handleEditWorkflow = (workflow) => {
     setSelectedWorkflow(workflow);
     setWorkflowName(workflow.name);
     setWorkflowDescription(workflow.description || '');
     
-    // Convert stored nodes/edges to ReactFlow format
     const flowNodes = (workflow.nodes || []).map(node => ({
       id: node.id,
       type: node.type,
@@ -840,22 +660,18 @@ function WorkflowOrchestrationEngine() {
     setViewMode('build');
   };
 
-  // Handle workflow deletion
   const handleDeleteWorkflow = async (workflowId) => {
     if (!window.confirm('Are you sure you want to delete this workflow?')) return;
     
     setLoading(true);
     try {
-      const res = await fetch(`/workflows/${workflowId}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(`/workflows/${workflowId}`, { method: 'DELETE' });
       
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.detail || 'Failed to delete workflow');
       }
       
-      // Refresh list
       await fetchWorkflows();
       alert('Workflow deleted successfully');
     } catch (err) {
@@ -866,20 +682,16 @@ function WorkflowOrchestrationEngine() {
     }
   };
 
-  // Handle workflow activation
   const handleActivateWorkflow = async (workflowId) => {
     setLoading(true);
     try {
-      const res = await fetch(`/workflows/${workflowId}/activate`, {
-        method: 'POST',
-      });
+      const res = await fetch(`/workflows/${workflowId}/activate`, { method: 'POST' });
       
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.detail || 'Failed to activate workflow');
       }
       
-      // Refresh list
       await fetchWorkflows();
       alert('Workflow activated successfully');
     } catch (err) {
@@ -890,20 +702,16 @@ function WorkflowOrchestrationEngine() {
     }
   };
 
-  // Handle workflow deactivation
   const handleDeactivateWorkflow = async (workflowId) => {
     setLoading(true);
     try {
-      const res = await fetch(`/workflows/${workflowId}/deactivate`, {
-        method: 'POST',
-      });
+      const res = await fetch(`/workflows/${workflowId}/deactivate`, { method: 'POST' });
       
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.detail || 'Failed to deactivate workflow');
       }
       
-      // Refresh list
       await fetchWorkflows();
       alert('Workflow deactivated successfully');
     } catch (err) {
@@ -914,7 +722,26 @@ function WorkflowOrchestrationEngine() {
     }
   };
 
-  // Handle workflow save
+  const handleSeeLogs = async (workflow) => {
+    setSelectedWorkflowForLogs(workflow);
+    setLogsModalOpen(true);
+    setLogsLoading(true);
+    try {
+      const res = await fetch(`/workflows/${workflow._id}/logs`);
+      if (res.ok) {
+        const data = await res.json();
+        setWorkflowLogs(data.logs || []);
+      } else {
+        setWorkflowLogs([]);
+      }
+    } catch (err) {
+      console.error('Error fetching workflow logs:', err);
+      setWorkflowLogs([]);
+    } finally {
+      setLogsLoading(false);
+    }
+  };
+
   const handleSaveWorkflow = async () => {
     if (!workflowName.trim()) {
       alert('Please enter a workflow name');
@@ -923,7 +750,6 @@ function WorkflowOrchestrationEngine() {
 
     setLoading(true);
     try {
-      // Convert ReactFlow nodes/edges to stored format
       const workflowData = {
         name: workflowName,
         description: workflowDescription,
@@ -944,14 +770,12 @@ function WorkflowOrchestrationEngine() {
 
       let res;
       if (selectedWorkflow && selectedWorkflow._id) {
-        // Update existing workflow
         res = await fetch(`/workflows/${selectedWorkflow._id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(workflowData),
         });
       } else {
-        // Create new workflow
         res = await fetch('/workflows', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -964,10 +788,7 @@ function WorkflowOrchestrationEngine() {
         throw new Error(err.detail || 'Failed to save workflow');
       }
 
-      const data = await res.json();
       alert('Workflow saved successfully');
-      
-      // Go back to list view and refresh
       await fetchWorkflows();
       setViewMode('list');
     } catch (err) {
@@ -978,7 +799,6 @@ function WorkflowOrchestrationEngine() {
     }
   };
 
-  // ReactFlow event handlers
   const onConnect = useCallback((params) => {
     setEdges((eds) => addEdge({ ...params, markerEnd: { type: MarkerType.ArrowClosed } }, eds));
   }, [setEdges]);
@@ -1032,19 +852,7 @@ function WorkflowOrchestrationEngine() {
       <div className="engine-container" style={{ padding: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h2>Workflow Orchestration Engine</h2>
-          <button
-            onClick={handleCreateNew}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#2563eb',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '500',
-            }}
-          >
+          <button onClick={handleCreateNew} style={{ padding: '10px 20px', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
             + Create New Workflow
           </button>
         </div>
@@ -1065,10 +873,19 @@ function WorkflowOrchestrationEngine() {
                 onDelete={handleDeleteWorkflow}
                 onActivate={handleActivateWorkflow}
                 onDeactivate={handleDeactivateWorkflow}
+                onSeeLogs={handleSeeLogs}
               />
             ))}
           </div>
         )}
+
+        <LogsModal
+          isOpen={logsModalOpen}
+          onClose={() => setLogsModalOpen(false)}
+          workflowName={selectedWorkflowForLogs?.name}
+          logs={workflowLogs}
+          loading={logsLoading}
+        />
       </div>
     );
   }
@@ -1076,77 +893,17 @@ function WorkflowOrchestrationEngine() {
   // Render build view
   return (
     <div className="engine-container" style={{ height: 'calc(100vh - 60px)', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <div style={{
-        padding: '12px 20px',
-        borderBottom: '1px solid #e5e7eb',
-        backgroundColor: 'white',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
+      <div style={{ padding: '12px 20px', borderBottom: '1px solid #e5e7eb', backgroundColor: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button
-            onClick={() => setViewMode('list')}
-            style={{
-              padding: '6px 12px',
-              border: '1px solid #d1d5db',
-              borderRadius: '4px',
-              backgroundColor: 'white',
-              cursor: 'pointer',
-              fontSize: '13px',
-              color: '#333',
-            }}
-          >
-            ← Back
-          </button>
-          <input
-            type="text"
-            value={workflowName}
-            onChange={(e) => setWorkflowName(e.target.value)}
-            placeholder="Workflow name"
-            style={{
-              padding: '8px 12px',
-              border: '1px solid #d1d5db',
-              borderRadius: '6px',
-              fontSize: '14px',
-              width: '250px',
-            }}
-          />
-          <input
-            type="text"
-            value={workflowDescription}
-            onChange={(e) => setWorkflowDescription(e.target.value)}
-            placeholder="Description (optional)"
-            style={{
-              padding: '8px 12px',
-              border: '1px solid #d1d5db',
-              borderRadius: '6px',
-              fontSize: '14px',
-              width: '300px',
-            }}
-          />
+          <button onClick={() => setViewMode('list')} style={{ padding: '6px 12px', border: '1px solid #d1d5db', borderRadius: '4px', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', color: '#333' }}>← Back</button>
+          <input type="text" value={workflowName} onChange={(e) => setWorkflowName(e.target.value)} placeholder="Workflow name" style={{ padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '14px', width: '250px' }} />
+          <input type="text" value={workflowDescription} onChange={(e) => setWorkflowDescription(e.target.value)} placeholder="Description (optional)" style={{ padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '14px', width: '300px' }} />
         </div>
-        <button
-          onClick={handleSaveWorkflow}
-          disabled={loading}
-          style={{
-            padding: '8px 20px',
-            backgroundColor: '#10b981',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            fontSize: '14px',
-            fontWeight: '500',
-            opacity: loading ? 0.7 : 1,
-          }}
-        >
+        <button onClick={handleSaveWorkflow} disabled={loading} style={{ padding: '8px 20px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: loading ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: '500', opacity: loading ? 0.7 : 1 }}>
           {loading ? 'Saving...' : 'Save Workflow'}
         </button>
       </div>
 
-      {/* Workflow Builder */}
       <div style={{ flex: 1, display: 'flex' }}>
         <Sidebar />
         
@@ -1171,13 +928,7 @@ function WorkflowOrchestrationEngine() {
           </ReactFlow>
 
           {selectedNode && (
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              height: '100%',
-              zIndex: 10,
-            }}>
+            <div style={{ position: 'absolute', top: 0, right: 0, height: '100%', zIndex: 10 }}>
               <NodeConfigPanel
                 selectedNode={selectedNode}
                 updateNodeData={updateNodeData}
@@ -1188,6 +939,14 @@ function WorkflowOrchestrationEngine() {
           )}
         </div>
       </div>
+
+      <LogsModal
+        isOpen={logsModalOpen}
+        onClose={() => setLogsModalOpen(false)}
+        workflowName={selectedWorkflowForLogs?.name}
+        logs={workflowLogs}
+        loading={logsLoading}
+      />
     </div>
   );
 }

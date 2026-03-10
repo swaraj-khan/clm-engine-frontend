@@ -29,32 +29,56 @@ body {
 
 .nav-container {
   width: 100%;
-  padding: 0 40px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
+  min-height: 50px;
 }
 
 .nav-title {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   white-space: nowrap;
+  padding-right: 16px;
+  border-right: 1px solid #34495e;
+  margin-right: 16px;
+}
+
+.nav-tabs-wrapper {
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #34495e transparent;
+}
+
+.nav-tabs-wrapper::-webkit-scrollbar {
+  height: 4px;
+}
+
+.nav-tabs-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav-tabs-wrapper::-webkit-scrollbar-thumb {
+  background-color: #34495e;
+  border-radius: 2px;
 }
 
 .nav-tabs {
   display: flex;
-  gap: 10px;
-  margin-left: 20px;
+  gap: 2px;
 }
 
 .nav-button {
   background: none;
   border: none;
-  color: #ecf0f1;
+  color: #bdc3c7;
   cursor: pointer;
-  padding: 20px 10px;
-  font-size: 12px;
+  padding: 12px 8px;
+  font-size: 11px;
   white-space: nowrap;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
 }
 
 .nav-button:hover {
@@ -63,9 +87,72 @@ body {
 }
 
 .nav-button.active {
-  background-color: #3498db;
+  background-color: transparent;
   color: #fff;
-  border-bottom: 3px solid #2980b9;
+  border-bottom: 2px solid #3498db;
+}
+
+/* User Dropdown */
+.nav-user-section {
+  margin-left: auto;
+  position: relative;
+}
+
+.user-dropdown {
+  position: relative;
+}
+
+.user-dropdown-toggle {
+  background: none;
+  border: 1px solid #34495e;
+  color: #ecf0f1;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.user-dropdown-toggle:hover {
+  background-color: #34495e;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  padding: 8px 0;
+  z-index: 1001;
+  margin-top: 4px;
+}
+
+.user-email {
+  padding: 8px 16px;
+  color: #2c3e50;
+  font-size: 12px;
+  border-bottom: 1px solid #ecf0f1;
+  margin-bottom: 8px;
+  word-break: break-all;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  padding: 8px 16px;
+  font-size: 12px;
+  width: 100%;
+  text-align: left;
+  border-radius: 0;
+}
+
+.logout-button:hover {
+  background-color: #fdf2f2;
 }
 
 /* Main Content */
